@@ -11,17 +11,19 @@ jobs:
   build:
     name: 'Build and Push'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [20]
+    # strategy:
+    #   matrix:
+    #     node: [20]
     
     steps:
       -  uses: actions/checkout@v4
 
-      - name: Setup node | ${{ matrix.node }}
+      # - name: Setup node | ${{ matrix.node }}
+      - name: Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          # node-version: ${{ matrix.node }}
+          node-version: 20
           cache: 'yarn'
       - run: yarn
       - run: yarn run test
@@ -38,11 +40,19 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME }}
           password: ${{secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build docker image
-        run: docker build -t gabadev/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: gabadev/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }},gabadev/rocketseat-ci-api:latest
+
+      # - name: Build docker image
+      #   run: docker build -t gabadev/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }} .
       
-      - name: Push image
-        run: docker push gabadev/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }}
+      # - name: Push image
+      #   run: docker push gabadev/rocketseat-ci-api:${{ steps.generate_tag.outputs.sha }}
+
+
       
 
 
