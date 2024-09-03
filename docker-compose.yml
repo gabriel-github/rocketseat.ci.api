@@ -1,0 +1,38 @@
+version: '3.8'
+
+
+services:
+  database:
+    image: mysql:8
+    restart: always
+    container_name: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=rocketseat-db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=root
+    networks:
+      - primeira-network
+    volumes:
+      - db:/var/lib/mysql
+  api-rocket:
+    container_name: api-rocket
+    build:
+      context: .
+    ports:
+      - 3001:3000
+    depends_on:
+      - database
+    networks:
+      - primeira-network
+
+networks:
+  primeira-network:
+    name: primeira-network
+    external: true
+    driver: bridge
+
+volumes:
+  db:
