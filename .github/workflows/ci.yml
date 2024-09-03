@@ -1,5 +1,12 @@
 name: CI
 
+
+on:
+  push:
+    branches:
+      - main
+
+
 jobs:
   build:
     name: 'Build and Push'
@@ -7,4 +14,3 @@ jobs:
 
     steps:
       -  uses: actions/checkout@v4
-      
